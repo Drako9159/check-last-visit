@@ -19,7 +19,7 @@ app.post("/visit", async (c) => {
   const { country, city, flag } = await c.req.json<LastVisit>();
   await db
     .atomic()
-    .sum(["lastVisit"], {
+    .set(["lastVisit"], {
       country,
       city,
       flag,
@@ -62,7 +62,7 @@ app.get("/visit", (c) => {
     //}
   });
 });
-
+/*
 
 app.get("/counter", (c) => {
   return streamSSE(c, async (stream) => {
@@ -98,5 +98,5 @@ app.get("/counter", (c) => {
     //}
   });
 });
-
+*/
 Deno.serve(app.fetch);
