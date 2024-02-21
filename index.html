@@ -21,10 +21,18 @@
         text-align: center;
         font-family: Menlo, monospace;
     }
+
+    small span {
+        display: block;
+        height: 20px;
+    }
 </style>
 
 <body>
-    <small>Info</small>
+    <small>
+        <span id="last"></span>
+        <span id="next"></span>
+    </small>
 
     <script type="module">
         const res = await fetch("https://geolocation.microlink.io/")
@@ -49,12 +57,27 @@
         })
 
         const source = new EventSource("/visit")
-        const small = document.querySelector("small")
+        const $last = document.getElementById("last")
+        const $next = document.getElementById("next")
+        let ready = true
+
+
 
         source.addEventListener("update", (event) => {
+            if (ready === false) return
             const { city, country, flag } = JSON.parse(event.data)
+            const message = `Last visit from ${city}, ${country} ${flag}`
+            const isLastEmpty = $last.innerHTML == ""
+            if (isLastEmpty) {
+                $last.innerHTML = message
+                return
+            }
+            $next.innerHTML = message
 
-            small.innerHTML = `Last visit from ${city}, ${country} ${flag}`
+            $next.style.animation = "fadeInUp 1s ease-in-out forwards"
+            $last.style.animation = "fadeOutUp 1s ease-in-out forwards"
+
+            ready = false
         })
     </script>
 
